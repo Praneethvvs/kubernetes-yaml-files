@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-k8s-service
+spec:
+  type: ClusterIP
+  selector:
+    app: backend-k8s-deployment-label 
+  ports:
+    - port: 8000
+      targetPort: 8000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-k8s-deployment
+#  labels:
+#    app: fastapi-k8s-deployment-label
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend-k8s-deployment-label
+  template:
+    metadata:
+      labels:
+        app: backend-k8s-deployment-label
+    spec:
+      containers:
+        - name: backend-application
+          image: pvvsdoc001/calculator-flask-microservice-backend:v1
+          resources:
+            limits:
+              memory: "250Mi"
+              cpu: "500m"
+          ports:
+            - containerPort: 8000
+
